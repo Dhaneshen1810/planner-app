@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   DndContext,
   closestCenter,
@@ -49,11 +49,7 @@ const SortableCard: React.FC<SortableCardProps> = ({
       className="bg-secondary shadow-md rounded-lg p-4 mb-4 flex justify-between items-center"
     >
       <div className="flex items-center gap-1">
-        <div
-          className="cursor-move"
-          {...attributes} // Apply drag attributes to the GripVertical icon
-          {...listeners} // Apply drag listeners to the GripVertical icon
-        >
+        <div className="cursor-move" {...attributes} {...listeners}>
           <GripVertical color="gray" width={15} />
         </div>
         <div className="text-sm sm:text-lg font-semibold">{card.title}</div>
@@ -74,9 +70,9 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   initialCards,
 }) => {
   const [cards, setCards] = useState<Task[] | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Ensure the cards are set after hydration
     setCards([...initialCards]);
   }, [initialCards]);
 
@@ -96,7 +92,19 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
         const oldIndex = items!.findIndex((item) => item.id === active.id);
         const newIndex = items!.findIndex((item) => item.id === over.id);
 
-        return arrayMove(items!, oldIndex, newIndex);
+        const updatedCards = arrayMove(items!, oldIndex, newIndex);
+
+        // Clear the previous debounce timer
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+
+        // Set a new debounce timer
+        debounceTimerRef.current = setTimeout(() => {
+          console.log("Updated Cards Order:", updatedCards);
+        }, 3000);
+
+        return updatedCards;
       });
     }
   };
