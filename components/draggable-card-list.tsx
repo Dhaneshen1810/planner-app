@@ -22,6 +22,8 @@ import { Task } from "@/src/types";
 import AddTaskButton from "./buttons/add-task-button";
 import RemoveTaskButton from "./buttons/remove-task-button";
 import UpdateTaskButton from "./buttons/update-task-button";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 interface SortableCardProps {
   card: Task;
@@ -34,12 +36,45 @@ const SortableCard: React.FC<SortableCardProps> = ({
   removeTask,
   updateTask,
 }) => {
+  const { toast } = useToast();
+  const [isCompleted, setIsCompleted] = useState<boolean>(card.is_completed);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: card.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const handleTitleClick = async (completed: boolean) => {
+    setIsCompleted(!completed);
+
+    await axios
+      .put(
+        `/api/tasks/${card.id}`,
+        {
+          task: { ...card, is_completed: !completed },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          console.log("success");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          variant: "destructive",
+          title: "Failed to update task",
+        });
+
+        setIsCompleted(completed);
+      });
   };
 
   return (
@@ -52,7 +87,14 @@ const SortableCard: React.FC<SortableCardProps> = ({
         <div className="cursor-move" {...attributes} {...listeners}>
           <GripVertical color="gray" width={15} />
         </div>
-        <div className="text-sm sm:text-lg font-semibold">{card.title}</div>
+        <div
+          className={`text-sm sm:text-lg font-semibold cursor-pointer ${
+            isCompleted && "line-through"
+          } ${isCompleted ? "text-gray-200" : "text-white"}`}
+          onClick={() => handleTitleClick(isCompleted)}
+        >
+          {card.title}
+        </div>
       </div>
       <div className="flex gap-2">
         <UpdateTaskButton task={card} onSuccess={updateTask} />
@@ -71,10 +113,25 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
 }) => {
   const [cards, setCards] = useState<Task[] | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingUpdateRef = useRef<Task[] | null>(null);
 
   useEffect(() => {
     setCards([...initialCards]);
   }, [initialCards]);
+
+  useEffect(() => {
+    // Handle updates before the user refreshes or leaves the page
+    const handleBeforeUnload = () => {
+      if (pendingUpdateRef.current) {
+        updateTasksInDb(pendingUpdateRef.current); // Send the pending updates
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -82,6 +139,17 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const updateTasksInDb = async (updatedCards: Task[]) => {
+    await axios
+      .put("/api/tasks", updatedCards)
+      .then((res) => {
+        console.log("Tasks updated successfully:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error updating tasks:", error);
+      });
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragEnd = (event: any) => {
@@ -92,17 +160,27 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
         const oldIndex = items!.findIndex((item) => item.id === active.id);
         const newIndex = items!.findIndex((item) => item.id === over.id);
 
-        const updatedCards = arrayMove(items!, oldIndex, newIndex);
+        const updatedCards = arrayMove(items!, oldIndex, newIndex).map(
+          (card, index) => {
+            return {
+              ...card,
+              position: index + 1,
+            };
+          }
+        );
 
         // Clear the previous debounce timer
         if (debounceTimerRef.current) {
           clearTimeout(debounceTimerRef.current);
         }
 
+        pendingUpdateRef.current = updatedCards;
+
         // Set a new debounce timer
         debounceTimerRef.current = setTimeout(() => {
           console.log("Updated Cards Order:", updatedCards);
-        }, 3000);
+          updateTasksInDb(updatedCards);
+        }, 1000);
 
         return updatedCards;
       });

@@ -15,8 +15,13 @@ export interface Task {
   date: Date;
   recurring_option: RECURRING_OPTION;
   is_completed: boolean;
+  position: number;
 }
 
 export interface CreateTaskInput extends Omit<Task, "id" | "date"> {
+  date: string;
+}
+
+export interface UpdateTaskInput extends Omit<Task, "id" | "date"> {
   date: string;
 }

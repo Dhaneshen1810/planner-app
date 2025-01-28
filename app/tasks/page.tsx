@@ -16,10 +16,11 @@ const fetchTasks = async (): Promise<Task[]> => {
 
 const TasksPage = async () => {
   const tasks = await fetchTasks();
+  const sortedTasks = tasks.sort((a, b) => a.position - b.position);
 
   return (
     <div className="flex h-screen bg-primary justify-center">
-      <TaskManager tasks={tasks} />
+      <TaskManager tasks={sortedTasks} />
     </div>
   );
 };

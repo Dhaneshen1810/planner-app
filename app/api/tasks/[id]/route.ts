@@ -1,4 +1,4 @@
-import { CreateTaskInput, RECURRING_OPTION } from "@/src/types";
+import { RECURRING_OPTION, UpdateTaskInput } from "@/src/types";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
@@ -50,7 +50,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const taskId = params.id;
+    const taskId = params?.id;
 
     if (!taskId) {
       return NextResponse.json(
@@ -60,19 +60,38 @@ export async function PUT(
     }
 
     const body = await req.json();
+    const task = body.task as Partial<UpdateTaskInput>;
 
-    if (!body.title) {
+    if (!task) {
       return NextResponse.json(
         { success: false, message: "Missing input" },
         { status: 400 }
       );
     }
 
-    const updatedTask: CreateTaskInput = {
-      title: body.title,
-      date: body.date || "2025-01-18",
-      is_completed: body.is_completed || false,
-      recurring_option: body.recurring_option || RECURRING_OPTION.NONE,
+    if (!task.title || typeof task.title !== "string") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Task title is required and must be a string",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (typeof task.position !== "number" || task.position < 0) {
+      return NextResponse.json(
+        { success: false, message: "Task position must be a valid number" },
+        { status: 400 }
+      );
+    }
+
+    const updatedTask: UpdateTaskInput = {
+      title: task.title,
+      date: task.date || "2025-01-18",
+      is_completed: task.is_completed || false,
+      recurring_option: task.recurring_option || RECURRING_OPTION.NONE,
+      position: task.position,
     };
 
     const response = await axios.put(

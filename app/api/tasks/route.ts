@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       date: "2025-01-18",
       is_completed: false,
       recurring_option: RECURRING_OPTION.NONE,
+      position: 0,
     };
 
     // Use axios to send the POST request
@@ -57,6 +58,51 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, task: response.data });
   } catch (error: unknown) {
     console.error("Error creating task:", error);
+
+    const errorMessage =
+      axios.isAxiosError(error) && error.response?.data?.message
+        ? error.response.data.message
+        : error instanceof Error
+        ? error.message
+        : "Unknown error";
+
+    return NextResponse.json(
+      { success: false, message: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const updatedTasks = await req.json();
+
+    if (!Array.isArray(updatedTasks)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid input. Expected an array of tasks.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const response = await axios.put(
+      `${process.env.SERVER_URL}/tasks`,
+      updatedTasks,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return NextResponse.json({
+      success: true,
+      updatedTasks: response.data,
+    });
+  } catch (error: unknown) {
+    console.error("Error updating tasks:", error);
 
     const errorMessage =
       axios.isAxiosError(error) && error.response?.data?.message

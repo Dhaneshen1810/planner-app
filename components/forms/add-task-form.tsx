@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
+import LoaderIcon from "../loader-icon";
 
 const taskSchema = z.object({
   title: z
@@ -27,12 +28,14 @@ interface AddTaskFormProps {
 }
 
 const AddTaskForm: React.FC<AddTaskFormProps> = ({ onSubmit }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
     defaultValues: { title: "" },
   });
 
   const handleSubmit = (data: TaskFormValues) => {
+    setIsLoading(true);
     onSubmit(data);
     form.reset();
   };
@@ -57,8 +60,8 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onSubmit }) => {
           )}
         />
         <DialogFooter>
-          <Button type="submit" variant="default">
-            Add Task
+          <Button type="submit" variant="default" disabled={isLoading}>
+            {isLoading && <LoaderIcon />} Add Task
           </Button>
         </DialogFooter>
       </form>

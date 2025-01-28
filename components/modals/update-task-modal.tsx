@@ -29,7 +29,7 @@ const UpdateTaskModal: React.FC<UpdateTaskModalProps> = ({
   const handleSubmit = async (data: TaskFormValues) => {
     await axios
       .put(`/api/tasks/${task.id}`, {
-        title: data.title,
+        task: data,
       })
       .then((response) => {
         if (isSuccessfullResponse(response.status)) {

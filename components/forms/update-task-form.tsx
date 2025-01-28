@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
 import { Task } from "@/src/types";
+import LoaderIcon from "../loader-icon";
 
 const taskSchema = z.object({
   title: z
     .string()
     .min(1, "Please enter a title")
     .max(50, "Title must not exceed 50 characters"),
+  position: z.number(),
 });
 
 export type TaskFormValues = z.infer<typeof taskSchema>;
@@ -32,12 +34,14 @@ const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
   currentTask,
   onSubmit,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
-    defaultValues: { title: currentTask.title }, // Prepopulate with the initial title
+    defaultValues: { title: currentTask.title, position: currentTask.position },
   });
 
   const handleSubmit = (data: TaskFormValues) => {
+    setIsLoading(true);
     onSubmit(data);
   };
 
@@ -61,8 +65,8 @@ const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
           )}
         />
         <DialogFooter>
-          <Button type="submit" variant="default">
-            Update Task
+          <Button type="submit" variant="default" disabled={isLoading}>
+            {isLoading && <LoaderIcon />} Update Task
           </Button>
         </DialogFooter>
       </form>
