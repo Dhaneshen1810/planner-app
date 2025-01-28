@@ -2,12 +2,11 @@ import { RECURRING_OPTION, UpdateTaskInput } from "@/src/types";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+type Params = Promise<{ id: string }>;
+
+export async function DELETE(req: Request, { params }: { params: Params }) {
   try {
-    const taskId = params.id;
+    const taskId = (await params).id;
 
     if (!taskId) {
       return NextResponse.json(
@@ -45,12 +44,9 @@ export async function DELETE(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request, { params }: { params: Params }) {
   try {
-    const taskId = params?.id;
+    const taskId = (await params).id;
 
     if (!taskId) {
       return NextResponse.json(
