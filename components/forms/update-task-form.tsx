@@ -19,7 +19,7 @@ const taskSchema = z.object({
   title: z
     .string()
     .min(1, "Please enter a title")
-    .max(50, "Title must not exceed 50 characters"),
+    .max(100, "Title must not exceed 100 characters"),
   position: z.number(),
 });
 

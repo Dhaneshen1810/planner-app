@@ -207,34 +207,43 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   }
 
   return (
-    <div className="container mx-auto max-w-2xl p-4">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4">Tasks</h1>
-        <AddTaskButton onSuccess={addNewTask} />
+    <div className="h-screen flex flex-col">
+      {/* Header Section */}
+      <div className="p-4">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold">Tasks</h1>
+          <AddTaskButton onSuccess={addNewTask} />
+        </div>
       </div>
 
-      {cards.length > 0 ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={cards} strategy={verticalListSortingStrategy}>
-            {cards.map((card) => (
-              <SortableCard
-                key={card.id}
-                card={card}
-                removeTask={removeTask}
-                updateTask={updateTask}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <div className="h-3/4 flex justify-center items-center">
-          <p className="text-2xl text-red-900">No Task To Display</p>
-        </div>
-      )}
+      {/* Scrollable Content Section */}
+      <div className="flex-1 overflow-y-auto p-4">
+        {cards.length > 0 ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={cards}
+              strategy={verticalListSortingStrategy}
+            >
+              {cards.map((card) => (
+                <SortableCard
+                  key={card.id}
+                  card={card}
+                  removeTask={removeTask}
+                  updateTask={updateTask}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        ) : (
+          <div className="h-full flex justify-center items-center">
+            <p className="text-2xl text-red-900">No Task To Display</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
