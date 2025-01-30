@@ -2,6 +2,7 @@ import { CreateTaskInput, RECURRING_OPTION } from "@/src/types";
 import axios from "axios";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
