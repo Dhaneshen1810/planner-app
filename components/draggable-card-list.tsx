@@ -81,7 +81,7 @@ const SortableCard: React.FC<SortableCardProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-secondary shadow-md rounded-lg p-4 mb-4 flex justify-between items-center"
+      className="bg-secondary shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-screen max-w-xl"
     >
       <div className="flex items-center gap-1">
         <div className="cursor-move" {...attributes} {...listeners}>

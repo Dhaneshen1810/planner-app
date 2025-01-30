@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2 } from "lucide-react";
+import LoaderIcon from "../loader-icon";
 
 interface RemoveTaskModalProps {
   open: boolean;
@@ -25,8 +26,10 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
   onSuccess,
 }) => {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleRemove = async () => {
+    setIsLoading(true);
     try {
       await axios.delete(`/api/tasks/${taskId}`);
       onSuccess(taskId);
@@ -38,6 +41,8 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
         title: "Failed to remove task",
         description: "An unexpected error occurred while removing the task.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,8 +56,12 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
           Are you sure you want to remove this task?
         </p>
         <DialogFooter>
-          <Button variant="destructive" onClick={handleRemove}>
-            Remove <Trash2 width={18} />
+          <Button
+            variant="destructive"
+            onClick={handleRemove}
+            disabled={isLoading}
+          >
+            Remove {isLoading ? <LoaderIcon /> : <Trash2 width={18} />}
           </Button>
           <Button variant="secondary" onClick={onClose}>
             Cancel
