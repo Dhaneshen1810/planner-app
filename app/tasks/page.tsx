@@ -1,6 +1,7 @@
 import TaskManager from "@/components/TaskManager";
 import { Task } from "@/src/types";
 import axios from "axios";
+export const dynamic = "force-dynamic";
 
 const fetchTasks = async (): Promise<Task[]> => {
   const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
