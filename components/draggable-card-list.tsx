@@ -81,7 +81,7 @@ const SortableCard: React.FC<SortableCardProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-secondary shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-screen max-w-xl"
+      className="bg-secondary shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl"
     >
       <div className="flex items-center gap-1">
         <div className="cursor-move" {...attributes} {...listeners}>
@@ -207,7 +207,7 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col w-full">
       {/* Header Section */}
       <div className="p-4">
         <div className="flex justify-between">
@@ -217,7 +217,7 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       </div>
 
       {/* Scrollable Content Section */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 items-center flex flex-col">
         {cards.length > 0 ? (
           <DndContext
             sensors={sensors}
