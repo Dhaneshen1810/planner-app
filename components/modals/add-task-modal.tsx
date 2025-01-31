@@ -48,7 +48,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-secondary border-secondary">
+      <DialogContent className="bg-secondary border-secondary top-10 sm:top-20 translate-y-0">
         <DialogHeader>
           <DialogTitle>Add new Task</DialogTitle>
         </DialogHeader>
