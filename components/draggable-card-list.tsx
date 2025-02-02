@@ -139,17 +139,22 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     };
   }, []);
 
+  const isTouchDevice =
+    typeof window !== "undefined" && "ontouchstart" in window;
+
+  const pointerSensor = useSensor(PointerSensor);
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250, // Prevent accidental drags
+      tolerance: 5, // Helps avoid false positives
+    },
+  });
+  const keyboardSensor = useSensor(KeyboardSensor, {
+    coordinateGetter: sortableKeyboardCoordinates,
+  });
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250, // Optional: Adds a slight delay before dragging to prevent accidental drags
-        tolerance: 5, // Optional: Prevents accidental drags when tapping
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    ...(isTouchDevice ? [touchSensor] : [pointerSensor, keyboardSensor])
   );
 
   const updateTasksInDb = async (updatedCards: Task[]) => {
