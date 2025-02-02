@@ -6,9 +6,10 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
-  TouchSensor,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -56,24 +57,14 @@ const SortableCard: React.FC<SortableCardProps> = ({
         {
           task: { ...card, is_completed: !completed },
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: { "Content-Type": "application/json" } }
       )
       .then((res) => {
-        if (res.data.success) {
-          console.log("success");
-        }
+        if (res.data.success) console.log("success");
       })
       .catch((error) => {
         console.log(error);
-        toast({
-          variant: "destructive",
-          title: "Failed to update task",
-        });
-
+        toast({ variant: "destructive", title: "Failed to update task" });
         setIsCompleted(completed);
       });
   };
@@ -87,7 +78,7 @@ const SortableCard: React.FC<SortableCardProps> = ({
       <div className="flex items-center gap-1">
         <div
           className="cursor-move"
-          style={{ touchAction: "none" }}
+          style={{ touchAction: "none" }} // Ensures proper drag handling
           {...attributes}
           {...listeners}
         >
@@ -95,8 +86,8 @@ const SortableCard: React.FC<SortableCardProps> = ({
         </div>
         <div
           className={`text-sm sm:text-lg font-semibold cursor-pointer ${
-            isCompleted && "line-through"
-          } ${isCompleted ? "text-gray-200" : "text-white"}`}
+            isCompleted ? "line-through text-gray-200" : "text-white"
+          }`}
           onClick={() => handleTitleClick(isCompleted)}
         >
           {card.title}
@@ -126,11 +117,8 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   }, [initialCards]);
 
   useEffect(() => {
-    // Handle updates before the user refreshes or leaves the page
     const handleBeforeUnload = () => {
-      if (pendingUpdateRef.current) {
-        updateTasksInDb(pendingUpdateRef.current); // Send the pending updates
-      }
+      if (pendingUpdateRef.current) updateTasksInDb(pendingUpdateRef.current);
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -139,13 +127,11 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     };
   }, []);
 
-  const isTouchDevice =
-    typeof window !== "undefined" && "ontouchstart" in window;
-
+  // Always initialize sensors
   const pointerSensor = useSensor(PointerSensor);
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 250, // Prevent accidental drags
+      delay: 250, // Prevents accidental drags
       tolerance: 5, // Helps avoid false positives
     },
   });
@@ -153,65 +139,46 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     coordinateGetter: sortableKeyboardCoordinates,
   });
 
-  const sensors = useSensors(
-    ...(isTouchDevice ? [touchSensor] : [pointerSensor, keyboardSensor])
-  );
+  // Use correct sensors dynamically without breaking React Hooks
+  const sensors = useSensors(pointerSensor, touchSensor, keyboardSensor);
 
   const updateTasksInDb = async (updatedCards: Task[]) => {
     await axios
       .put("/api/tasks", updatedCards)
-      .then((res) => {
-        console.log("Tasks updated successfully:", res.data);
-      })
-      .catch((error) => {
-        console.error("Error updating tasks:", error);
-      });
+      .then((res) => console.log("Tasks updated successfully:", res.data))
+      .catch((error) => console.error("Error updating tasks:", error));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    if (active.id !== over.id) {
-      setCards((items) => {
-        const oldIndex = items!.findIndex((item) => item.id === active.id);
-        const newIndex = items!.findIndex((item) => item.id === over.id);
+    setCards((items) => {
+      const oldIndex = items!.findIndex((item) => item.id === active.id);
+      const newIndex = items!.findIndex((item) => item.id === over.id);
 
-        const updatedCards = arrayMove(items!, oldIndex, newIndex).map(
-          (card, index) => {
-            return {
-              ...card,
-              position: index + 1,
-            };
-          }
-        );
+      const updatedCards = arrayMove(items!, oldIndex, newIndex).map(
+        (card, index) => ({ ...card, position: index + 1 })
+      );
 
-        // Clear the previous debounce timer
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current);
-        }
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      pendingUpdateRef.current = updatedCards;
 
-        pendingUpdateRef.current = updatedCards;
+      debounceTimerRef.current = setTimeout(() => {
+        console.log("Updated Cards Order:", updatedCards);
+        updateTasksInDb(updatedCards);
+      }, 1000);
 
-        // Set a new debounce timer
-        debounceTimerRef.current = setTimeout(() => {
-          console.log("Updated Cards Order:", updatedCards);
-          updateTasksInDb(updatedCards);
-        }, 1000);
-
-        return updatedCards;
-      });
-    }
+      return updatedCards;
+    });
   };
 
   const addNewTask = (task: Task) =>
     setCards((prevCards) => [...(prevCards ?? []), task]);
-
   const removeTask = (taskId: string) =>
     setCards((prevCards) =>
       (prevCards ?? []).filter((task) => task.id !== taskId)
     );
-
   const updateTask = (updatedTask: Task) =>
     setCards((prevCards) =>
       (prevCards ?? []).map((task) =>
@@ -219,13 +186,10 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       )
     );
 
-  if (!cards) {
-    return <p className="text-center">Loading...</p>;
-  }
+  if (!cards) return <p className="text-center">Loading...</p>;
 
   return (
     <div className="h-screen flex flex-col w-full">
-      {/* Header Section */}
       <div className="p-4">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Tasks</h1>
@@ -233,7 +197,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
         </div>
       </div>
 
-      {/* Scrollable Content Section */}
       <div className="flex-1 overflow-y-auto p-4 items-center flex flex-col">
         {cards.length > 0 ? (
           <DndContext

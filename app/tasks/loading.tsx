@@ -1,12 +1,24 @@
-import { Loader } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading() {
+const Loading = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="text-center">
-        <Loader className="animate-spin text-gray-500" size={48} />
-        <p className="mt-4 text-gray-700 text-lg font-medium">Loading...</p>
+    <div className="h-screen flex flex-col w-full">
+      {/* Header Section */}
+      <div className="p-4">
+        <h1 className="text-2xl font-bold">Tasks</h1>
+      </div>
+
+      {/* Skeleton Cards */}
+      <div className="flex-1 overflow-y-auto p-4 items-center flex flex-col">
+        {[...Array(3)].map((_, index) => (
+          <Skeleton
+            key={index}
+            className="bg-secondary shadow-md rounded-lg p-4 mb-3 w-full max-w-xl h-12"
+          />
+        ))}
       </div>
     </div>
   );
-}
+};
+
+export default Loading;
