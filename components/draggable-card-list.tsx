@@ -85,7 +85,12 @@ const SortableCard: React.FC<SortableCardProps> = ({
       className="bg-secondary shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl"
     >
       <div className="flex items-center gap-1">
-        <div className="cursor-move" {...attributes} {...listeners}>
+        <div
+          className="cursor-move"
+          style={{ touchAction: "none" }}
+          {...attributes}
+          {...listeners}
+        >
           <GripVertical color="gray" width={15} />
         </div>
         <div
