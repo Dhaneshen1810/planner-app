@@ -8,6 +8,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  TouchSensor,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -135,6 +136,12 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
 
   const sensors = useSensors(
     useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250, // Optional: Adds a slight delay before dragging to prevent accidental drags
+        tolerance: 5, // Optional: Prevents accidental drags when tapping
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
