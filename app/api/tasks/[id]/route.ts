@@ -59,6 +59,7 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
     const body = await req.json();
     const task = body.task as Partial<UpdateTaskInput>;
+    const selectedDays = body.selectedDays as RECURRING_OPTION[];
 
     if (!task) {
       return NextResponse.json(
@@ -84,11 +85,18 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       );
     }
 
+    if (!selectedDays) {
+      return NextResponse.json(
+        { success: false, message: "Missing task information" },
+        { status: 400 }
+      );
+    }
+
     const updatedTask: UpdateTaskInput = {
       title: task.title,
       date: task.date || "2025-01-18",
       is_completed: task.is_completed || false,
-      recurring_option: task.recurring_option || RECURRING_OPTION.NONE,
+      recurring_option: selectedDays || [],
       position: task.position,
     };
 

@@ -13,7 +13,7 @@ export interface Task {
   id: string;
   title: string;
   date: Date;
-  recurring_option: RECURRING_OPTION;
+  recurring_option: RECURRING_OPTION[];
   is_completed: boolean;
   position: number;
 }

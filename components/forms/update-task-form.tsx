@@ -14,6 +14,7 @@ import {
 import { DialogFooter } from "../ui/dialog";
 import { Task } from "@/src/types";
 import LoaderIcon from "../loader-icon";
+import WeekdaySelector from "../weekday-selector";
 
 const taskSchema = z.object({
   title: z
@@ -27,7 +28,7 @@ export type TaskFormValues = z.infer<typeof taskSchema>;
 
 interface UpdateTaskFormProps {
   currentTask: Task;
-  onSubmit: (data: TaskFormValues) => void;
+  onSubmit: (data: TaskFormValues, selectedDays: string[]) => void;
 }
 
 const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
@@ -35,6 +36,10 @@ const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
   onSubmit,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    currentTask.recurring_option || []
+  );
+
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
     defaultValues: { title: currentTask.title, position: currentTask.position },
@@ -42,7 +47,7 @@ const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
 
   const handleSubmit = (data: TaskFormValues) => {
     setIsLoading(true);
-    onSubmit(data);
+    onSubmit(data, selectedDays);
   };
 
   return (
@@ -63,6 +68,10 @@ const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
               <FormMessage />
             </FormItem>
           )}
+        />
+        <WeekdaySelector
+          selectedDays={selectedDays}
+          setSelectedDays={setSelectedDays}
         />
         <DialogFooter>
           <Button type="submit" variant="default" disabled={isLoading}>

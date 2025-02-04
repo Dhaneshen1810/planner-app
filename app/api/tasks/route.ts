@@ -1,4 +1,4 @@
-import { CreateTaskInput, RECURRING_OPTION } from "@/src/types";
+import { CreateTaskInput } from "@/src/types";
 import axios from "axios";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
@@ -28,7 +28,6 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("test", body, body.title);
 
     if (!body.title) {
       return NextResponse.json(
@@ -37,11 +36,18 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!body.selectedDays) {
+      return NextResponse.json(
+        { success: false, message: "Missing selected days input" },
+        { status: 500 }
+      );
+    }
+
     const newTask: CreateTaskInput = {
       title: body.title,
       date: "2025-01-18",
       is_completed: false,
-      recurring_option: RECURRING_OPTION.NONE,
+      recurring_option: body.selectedDays || [],
       position: 0,
     };
 
