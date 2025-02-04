@@ -24,10 +24,11 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 }) => {
   const { toast } = useToast();
 
-  const handleSubmit = async (data: TaskFormValues) => {
+  const handleSubmit = async (data: TaskFormValues, selectedDays: string[]) => {
     await axios
       .post("/api/tasks", {
         title: data.title,
+        selectedDays,
       })
       .then((response) => {
         if (isSuccessfullResponse(response.status)) {
