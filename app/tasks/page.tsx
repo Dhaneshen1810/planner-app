@@ -6,11 +6,14 @@ export const dynamic = "force-dynamic";
 const fetchTasks = async (): Promise<Task[]> => {
   const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const localDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
 
   try {
     const response = await axios.get<Task[]>(
-      `${SERVER_URL}/tasks?date=${today}`
+      `${SERVER_URL}/tasks?date=${localDate}`
     );
     return response.data;
   } catch (error) {
