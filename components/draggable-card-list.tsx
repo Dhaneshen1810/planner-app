@@ -26,6 +26,8 @@ import RemoveTaskButton from "./buttons/remove-task-button";
 import UpdateTaskButton from "./buttons/update-task-button";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 interface SortableCardProps {
   card: Task;
@@ -103,10 +105,12 @@ const SortableCard: React.FC<SortableCardProps> = ({
 
 interface DraggableCardListProps {
   initialCards: Task[];
+  allTasks?: boolean;
 }
 
 const DraggableCardList: React.FC<DraggableCardListProps> = ({
   initialCards,
+  allTasks,
 }) => {
   const [cards, setCards] = useState<Task[] | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -190,10 +194,19 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
 
   return (
     <div className="h-screen flex flex-col w-full">
-      <div className="p-4">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">Tasks</h1>
+      <div className="flex justify-between max-w-2xl self-center p-4 w-full ">
+        <h1 className="text-2xl font-bold">Tasks</h1>
+        <div className="flex gap-2">
           <AddTaskButton onSuccess={addNewTask} />
+          {allTasks ? (
+            <Link href="/tasks">
+              <Button variant="secondary">Today`s Task</Button>
+            </Link>
+          ) : (
+            <Link href="/all-tasks">
+              <Button variant="secondary">All Task</Button>
+            </Link>
+          )}
         </div>
       </div>
 
