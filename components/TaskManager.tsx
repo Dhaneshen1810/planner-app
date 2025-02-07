@@ -13,10 +13,11 @@ const DraggableCardList = dynamic(
 
 interface TaskManagerProps {
   tasks: Task[];
+  allTasks?: boolean;
 }
 
-const TaskManager: React.FC<TaskManagerProps> = ({ tasks }) => {
-  return <DraggableCardList initialCards={tasks} />;
+const TaskManager: React.FC<TaskManagerProps> = ({ tasks, allTasks }) => {
+  return <DraggableCardList initialCards={tasks} allTasks={allTasks} />;
 };
 
 export default TaskManager;

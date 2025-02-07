@@ -3,9 +3,18 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const response = await fetch(`${process.env.SERVER_URL}/tasks`);
+    const { searchParams } = new URL(req.url);
+    const date = searchParams.get("date");
+
+    let fetchUrl = `${process.env.SERVER_URL}/tasks`;
+
+    if (date) {
+      fetchUrl += `?date_str=${encodeURIComponent(date)}`;
+    }
+
+    const response = await fetch(fetchUrl);
 
     if (!response.ok) {
       throw new Error("Failed to fetch tasks");

@@ -5,13 +5,8 @@ export const dynamic = "force-dynamic";
 
 const fetchTasks = async (): Promise<Task[]> => {
   const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
-
-  const today = new Date().toISOString().split("T")[0];
-
   try {
-    const response = await axios.get<Task[]>(
-      `${SERVER_URL}/tasks?date=${today}`
-    );
+    const response = await axios.get<Task[]>(`${SERVER_URL}/tasks`);
     return response.data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -25,7 +20,7 @@ const TasksPage = async () => {
 
   return (
     <div className="flex h-screen bg-primary justify-center">
-      <TaskManager tasks={sortedTasks} />
+      <TaskManager tasks={sortedTasks} allTasks={true} />
     </div>
   );
 };
