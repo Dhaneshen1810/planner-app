@@ -84,19 +84,13 @@ export async function PUT(req: Request, { params }: { params: Params }) {
         { status: 400 }
       );
     }
-
-    if (!selectedDays) {
-      return NextResponse.json(
-        { success: false, message: "Missing task information" },
-        { status: 400 }
-      );
-    }
+    console.log({ task });
 
     const updatedTask: UpdateTaskInput = {
       title: task.title,
       date: task.date || "2025-01-18",
       is_completed: task.is_completed || false,
-      recurring_option: selectedDays || [],
+      recurring_option: selectedDays || task.recurring_option,
       position: task.position,
     };
 

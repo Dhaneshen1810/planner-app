@@ -38,25 +38,14 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    if (!body.title) {
-      return NextResponse.json(
-        { success: false, message: "Missing input" },
-        { status: 500 }
-      );
-    }
-
-    if (!body.selectedDays) {
-      return NextResponse.json(
-        { success: false, message: "Missing selected days input" },
-        { status: 500 }
-      );
-    }
+    const data = body.data;
 
     const newTask: CreateTaskInput = {
-      title: body.title,
-      date: "2025-01-18",
+      title: data.title,
+      date: data.date || undefined,
       is_completed: false,
-      recurring_option: body.selectedDays || [],
+      recurring_option: data.recurring_option || [],
+      time: data.time || undefined,
       position: 0,
     };
 

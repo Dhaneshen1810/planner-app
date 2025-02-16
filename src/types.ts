@@ -12,7 +12,8 @@ export enum RECURRING_OPTION {
 export interface Task {
   id: string;
   title: string;
-  date: Date;
+  date?: Date;
+  time?: string;
   recurring_option: RECURRING_OPTION[];
   is_completed: boolean;
   position: number;

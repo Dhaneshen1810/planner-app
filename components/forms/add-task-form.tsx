@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,66 +15,101 @@ import {
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
 import LoaderIcon from "../loader-icon";
-import WeekdaySelector from "../weekday-selector";
+// import WeekdaySelector from "../weekday-selector";
+import TimeSelector from "../time-selector";
+import TaskScheduler from "../task-scheduler";
+import { RECURRING_OPTION } from "@/src/types";
+import axios from "axios";
+import { isSuccessfullResponse } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const taskSchema = z.object({
   title: z
     .string()
     .min(1, "Please enter a title")
     .max(100, "Title must not exceed 100 characters"),
+  date: z.date().optional(),
+  time: z.string().optional(),
+  recurring_option: z.array(z.nativeEnum(RECURRING_OPTION)),
 });
 
 export type TaskFormValues = z.infer<typeof taskSchema>;
 
-interface AddTaskFormProps {
-  onSubmit: (data: TaskFormValues, selectedDays: string[]) => void;
-}
-
-const AddTaskForm: React.FC<AddTaskFormProps> = ({ onSubmit }) => {
+const AddTaskForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
-    defaultValues: { title: "" },
+    defaultValues: {
+      title: "",
+      time: undefined,
+      date: undefined,
+      recurring_option: [],
+    },
   });
 
-  const handleSubmit = (data: TaskFormValues) => {
+  const handleSubmit = async (data: TaskFormValues) => {
     setIsLoading(true);
-    onSubmit(data, selectedDays);
-    form.reset();
+
+    try {
+      const response = await axios.post("/api/tasks", { data });
+      console.log("status", response.status);
+      if (isSuccessfullResponse(response.status)) {
+        router.push("/tasks");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to add task",
+        description: "An unexpected error occurred",
+      });
+      console.error("Error adding task:", error);
+    } finally {
+      form.reset();
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          name="title"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  placeholder="Enter task title"
-                  className="bg-white text-black"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <WeekdaySelector
+    <div className="w-full max-w-2xl">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <FormField
+            name="title"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder="Title"
+                    className="bg-white text-black"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <WeekdaySelector
           selectedDays={selectedDays}
           setSelectedDays={setSelectedDays}
-        />
-        <DialogFooter>
-          <Button type="submit" variant="default" disabled={isLoading}>
-            {isLoading && <LoaderIcon />} Add Task
-          </Button>
-        </DialogFooter>
-      </form>
-    </Form>
+        /> */}
+          <TaskScheduler />
+          <TimeSelector />
+          <DialogFooter>
+            <Button type="submit" variant="tertiary" disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="secondary" disabled={isLoading}>
+              {isLoading && <LoaderIcon />} Create
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    </div>
   );
 };
 
