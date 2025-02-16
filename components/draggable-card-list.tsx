@@ -177,8 +177,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     });
   };
 
-  const addNewTask = (task: Task) =>
-    setCards((prevCards) => [...(prevCards ?? []), task]);
   const removeTask = (taskId: string) =>
     setCards((prevCards) =>
       (prevCards ?? []).filter((task) => task.id !== taskId)
@@ -197,7 +195,7 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       <div className="flex justify-between max-w-2xl self-center p-4 w-full ">
         <h1 className="text-2xl font-bold">Tasks</h1>
         <div className="flex gap-2">
-          <AddTaskButton onSuccess={addNewTask} />
+          <AddTaskButton />
           {allTasks ? (
             <Link href="/tasks">
               <Button variant="secondary">Today`s Task</Button>
