@@ -1,4 +1,4 @@
-import { RECURRING_OPTION, UpdateTaskInput } from "@/src/types";
+import { UpdateTaskInput } from "@/src/types";
 import axios from "axios";
 import { NextResponse } from "next/server";
 export const revalidate = 0;
@@ -58,8 +58,8 @@ export async function PUT(req: Request, { params }: { params: Params }) {
     }
 
     const body = await req.json();
-    const task = body.task as Partial<UpdateTaskInput>;
-    const selectedDays = body.selectedDays as RECURRING_OPTION[];
+    const task = body.data as Partial<UpdateTaskInput>;
+    console.log({ body });
 
     if (!task) {
       return NextResponse.json(
@@ -78,21 +78,16 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       );
     }
 
-    if (typeof task.position !== "number" || task.position < 0) {
-      return NextResponse.json(
-        { success: false, message: "Task position must be a valid number" },
-        { status: 400 }
-      );
-    }
-    console.log({ task });
-
     const updatedTask: UpdateTaskInput = {
       title: task.title,
-      date: task.date || "2025-01-18",
+      date: task.date ? task.date.split("T")[0] : undefined,
+      time: task.time || undefined,
       is_completed: task.is_completed || false,
-      recurring_option: selectedDays || task.recurring_option,
-      position: task.position,
+      recurring_option: task.recurring_option || [],
+      position: task.position || 0,
     };
+
+    console.log({ updatedTask });
 
     const response = await axios.put(
       `${process.env.SERVER_URL}/tasks/${taskId}`,
@@ -114,7 +109,7 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
     throw new Error("Failed to update task");
   } catch (error: unknown) {
-    console.error("Error updating task:", error);
+    console.error(error);
 
     const errorMessage =
       axios.isAxiosError(error) && error.response?.data?.message

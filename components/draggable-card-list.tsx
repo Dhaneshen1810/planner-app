@@ -32,14 +32,9 @@ import { Button } from "./ui/button";
 interface SortableCardProps {
   card: Task;
   removeTask: (taskId: string) => void;
-  updateTask: (updatedTask: Task) => void;
 }
 
-const SortableCard: React.FC<SortableCardProps> = ({
-  card,
-  removeTask,
-  updateTask,
-}) => {
+const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
   const { toast } = useToast();
   const [isCompleted, setIsCompleted] = useState<boolean>(card.is_completed);
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -96,7 +91,7 @@ const SortableCard: React.FC<SortableCardProps> = ({
         </div>
       </div>
       <div className="flex gap-2">
-        <UpdateTaskButton task={card} onSuccess={updateTask} />
+        <UpdateTaskButton task={card} />
         <RemoveTaskButton taskId={card.id} onSuccess={removeTask} />
       </div>
     </div>
@@ -181,12 +176,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     setCards((prevCards) =>
       (prevCards ?? []).filter((task) => task.id !== taskId)
     );
-  const updateTask = (updatedTask: Task) =>
-    setCards((prevCards) =>
-      (prevCards ?? []).map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      )
-    );
 
   if (!cards) return <p className="text-center">Loading...</p>;
 
@@ -224,7 +213,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
                   key={card.id}
                   card={card}
                   removeTask={removeTask}
-                  updateTask={updateTask}
                 />
               ))}
             </SortableContext>
