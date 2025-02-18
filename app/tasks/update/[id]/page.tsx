@@ -1,8 +1,13 @@
+import React from "react";
 import UpdateTaskForm from "@/components/forms/update-task-form";
 import { Task } from "@/src/types";
 
-const UpdateTask = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+export default async function UpdateTask({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
   const response = await fetch(`${process.env.SERVER_URL}/tasks/${id}`, {
     cache: "no-store",
@@ -20,6 +25,4 @@ const UpdateTask = async ({ params }: { params: { id: string } }) => {
       <UpdateTaskForm task={task} />
     </div>
   );
-};
-
-export default UpdateTask;
+}
