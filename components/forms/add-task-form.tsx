@@ -21,6 +21,7 @@ import { isSuccessfullResponse } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const TaskScheduler = dynamic(() => import("../task-scheduler"), {
   ssr: false,
@@ -100,9 +101,11 @@ const AddTaskForm = () => {
           <TaskScheduler />
           <TimeSelector />
           <DialogFooter>
-            <Button type="submit" variant="tertiary" disabled={isLoading}>
-              Cancel
-            </Button>
+            <Link href="/tasks">
+              <Button variant="tertiary" disabled={isLoading}>
+                Cancel
+              </Button>
+            </Link>
             <Button type="submit" variant="secondary" disabled={isLoading}>
               {isLoading && <LoaderIcon />} Create
             </Button>
