@@ -15,13 +15,18 @@ import {
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
 import LoaderIcon from "../loader-icon";
-import TimeSelector from "../time-selector";
-import TaskScheduler from "../task-scheduler";
 import { RECURRING_OPTION } from "@/src/types";
 import axios from "axios";
 import { isSuccessfullResponse } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const TaskScheduler = dynamic(() => import("../task-scheduler"), {
+  ssr: false,
+});
+
+const TimeSelector = dynamic(() => import("../time-selector"), { ssr: false });
 
 const taskSchema = z.object({
   title: z

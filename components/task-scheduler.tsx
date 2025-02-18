@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 
-// Use full day names that match the enum values in your schema
 const daysOfWeek = [
   "Monday",
   "Tuesday",
@@ -30,34 +29,33 @@ const daysOfWeek = [
 
 export default function TaskScheduler() {
   const { setValue, watch } = useFormContext();
-  // Watch the recurring_option field from the form
   const recurringOptionValue = watch("recurring_option");
+  const dateValue = watch("date");
 
-  const [taskType, setTaskType] = useState("one-time");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  // Local state for selectedDays (for UI purposes)
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [taskType, setTaskType] = useState(
+    dateValue ? "one-time" : "recurring"
+  );
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(dateValue);
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    recurringOptionValue || []
+  );
 
-  // Synchronize local selectedDays with the form value
   useEffect(() => {
     setSelectedDays(recurringOptionValue || []);
-  }, [recurringOptionValue]);
+    setSelectedDate(dateValue);
+  }, [recurringOptionValue, dateValue]);
 
-  // When changing the task type, clear the irrelevant field
   const handleTaskTypeChange = (value: string) => {
     setTaskType(value);
     if (value === "one-time") {
-      // Clear recurring days when switching to one-time
       setSelectedDays([]);
       setValue("recurring_option", []);
     } else {
-      // Clear the date when switching to recurring
       setSelectedDate(undefined);
       setValue("date", undefined);
     }
   };
 
-  // Update recurring options in the form when a day is toggled
   const handleDayChange = (day: string) => {
     const newDays = selectedDays.includes(day)
       ? selectedDays.filter((d) => d !== day)
@@ -68,7 +66,6 @@ export default function TaskScheduler() {
     }
   };
 
-  // Update the form's date when a date is selected
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
     if (taskType === "one-time") {
@@ -84,7 +81,7 @@ export default function TaskScheduler() {
       <CardContent className="grid gap-6">
         <RadioGroup
           value={taskType}
-          onValueChange={(value) => handleTaskTypeChange(value)}
+          onValueChange={handleTaskTypeChange}
           className="grid grid-cols-2 gap-4"
         >
           <div className="flex items-center space-x-2">
@@ -117,7 +114,7 @@ export default function TaskScheduler() {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={(date) => handleDateSelect(date)}
+                  onSelect={handleDateSelect}
                   initialFocus
                 />
               </PopoverContent>
@@ -136,7 +133,6 @@ export default function TaskScheduler() {
                     checked={selectedDays.includes(day)}
                     onCheckedChange={() => handleDayChange(day)}
                   />
-                  {/* Optionally display abbreviated labels */}
                   <Label htmlFor={day}>{day.substring(0, 3)}</Label>
                 </div>
               ))}

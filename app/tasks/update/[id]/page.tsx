@@ -13,7 +13,6 @@ const UpdateTask = async ({ params }: { params: { id: string } }) => {
   }
 
   const task = (await response.json()) as Task;
-  console.log({ task });
 
   return (
     <div className="flex min-h-screen bg-primary items-center flex-col pt-2 gap-5 w-full">
