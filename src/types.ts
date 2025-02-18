@@ -24,5 +24,5 @@ export interface CreateTaskInput extends Omit<Task, "id" | "date"> {
 }
 
 export interface UpdateTaskInput extends Omit<Task, "id" | "date"> {
-  date: string;
+  date?: string;
 }

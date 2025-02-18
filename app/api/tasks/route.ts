@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 
     const newTask: CreateTaskInput = {
       title: data.title,
-      date: data.date || undefined,
+      date: data.date ? data.date.split("T")[0] : undefined,
       is_completed: false,
       recurring_option: data.recurring_option || [],
       time: data.time || undefined,

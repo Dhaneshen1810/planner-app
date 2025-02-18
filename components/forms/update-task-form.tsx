@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,74 +14,121 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
-import { Task } from "@/src/types";
 import LoaderIcon from "../loader-icon";
-import WeekdaySelector from "../weekday-selector";
+import { RECURRING_OPTION, Task } from "@/src/types";
+import axios from "axios";
+import { isSuccessfullResponse } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const TaskScheduler = dynamic(() => import("../task-scheduler"), {
+  ssr: false,
+});
+
+const TimeSelector = dynamic(() => import("../time-selector"), { ssr: false });
 
 const taskSchema = z.object({
   title: z
     .string()
     .min(1, "Please enter a title")
     .max(100, "Title must not exceed 100 characters"),
-  position: z.number(),
+  date: z.date().optional(),
+  time: z.string().optional(),
+  recurring_option: z.array(z.nativeEnum(RECURRING_OPTION)),
 });
 
-export type TaskFormValues = z.infer<typeof taskSchema>;
+export type UpdateTaskFormValues = z.infer<typeof taskSchema>;
 
-interface UpdateTaskFormProps {
-  currentTask: Task;
-  onSubmit: (data: TaskFormValues, selectedDays: string[]) => void;
-}
-
-const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({
-  currentTask,
-  onSubmit,
-}) => {
+const UpdateTaskForm = ({ task }: { task?: Task }) => {
+  const router = useRouter();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedDays, setSelectedDays] = useState<string[]>(
-    currentTask.recurring_option || []
-  );
 
-  const form = useForm<TaskFormValues>({
+  const form = useForm<UpdateTaskFormValues>({
     resolver: zodResolver(taskSchema),
-    defaultValues: { title: currentTask.title, position: currentTask.position },
+    defaultValues: {
+      title: task?.title || "",
+      time: task?.time || undefined,
+      date: task?.date ? new Date(task.date + "T00:00:00") : undefined,
+      recurring_option: task?.recurring_option || [],
+    },
   });
 
-  const handleSubmit = (data: TaskFormValues) => {
+  // Update form values if the task prop changes
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        title: task.title,
+        time: task.time || undefined,
+        date: task?.date ? new Date(task.date + "T00:00:00") : undefined,
+        recurring_option: task.recurring_option || [],
+      });
+    }
+  }, [task, form]);
+
+  const handleSubmit = async (data: UpdateTaskFormValues) => {
     setIsLoading(true);
-    onSubmit(data, selectedDays);
+
+    try {
+      let response;
+      if (task) {
+        // Update existing task
+        response = await axios.put(`/api/tasks/${task.id}`, { data });
+      } else {
+        // Create new task
+        response = await axios.post("/api/tasks", { data });
+      }
+
+      if (isSuccessfullResponse(response.status)) {
+        router.push("/tasks");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: task ? "Failed to update task" : "Failed to add task",
+        description: "An unexpected error occurred",
+      });
+      console.error("Error:", error);
+    } finally {
+      form.reset();
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          name="title"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  placeholder="Enter task title"
-                  className="bg-white text-black"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <WeekdaySelector
-          selectedDays={selectedDays}
-          setSelectedDays={setSelectedDays}
-        />
-        <DialogFooter>
-          <Button type="submit" variant="default" disabled={isLoading}>
-            {isLoading && <LoaderIcon />} Update Task
-          </Button>
-        </DialogFooter>
-      </form>
-    </Form>
+    <div className="w-full max-w-2xl">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <FormField
+            name="title"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder="Title"
+                    className="bg-white text-black"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <TaskScheduler />
+          <TimeSelector />
+          <DialogFooter>
+            <Button type="submit" variant="tertiary" disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="secondary" disabled={isLoading}>
+              {isLoading && <LoaderIcon />} {task ? "Update" : "Create"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    </div>
   );
 };
 

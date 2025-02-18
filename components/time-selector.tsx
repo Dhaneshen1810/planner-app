@@ -24,21 +24,22 @@ const minutes = Array.from({ length: 60 }, (_, i) =>
 );
 
 const TimeSelector = () => {
-  const { setValue } = useFormContext();
-  const [time, setTime] = React.useState({
-    hours: "12",
-    minutes: "00",
-    isPM: false,
-  });
-  const [tempTime, setTempTime] = React.useState({
-    hours: "12",
-    minutes: "00",
-    isPM: false,
-  });
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [showTime, setShowTime] = React.useState(false);
+  const { setValue, watch } = useFormContext();
+  const timeValue = watch("time");
 
-  // If the time is hidden while the dialog is open, close it.
+  const [time, setTime] = React.useState(() => {
+    if (timeValue) {
+      const [timePart, period] = timeValue.split(" ");
+      const [h, m] = timePart.split(":");
+      return { hours: h, minutes: m, isPM: period === "PM" };
+    }
+    return { hours: "12", minutes: "00", isPM: false };
+  });
+
+  const [tempTime, setTempTime] = React.useState(time);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [showTime, setShowTime] = React.useState(!!timeValue);
+
   React.useEffect(() => {
     if (showTime) {
       const timeString = `${tempTime.hours}:${tempTime.minutes} ${
@@ -50,12 +51,11 @@ const TimeSelector = () => {
     if (!showTime && isOpen) {
       setIsOpen(false);
     }
-  }, [showTime, isOpen]);
+  }, [showTime, isOpen, tempTime, setValue]);
 
   const handleConfirm = () => {
     setTime(tempTime);
     setIsOpen(false);
-    // Format the time string (e.g., "12:00 PM") and update the form field
     const timeString = `${tempTime.hours}:${tempTime.minutes} ${
       tempTime.isPM ? "PM" : "AM"
     }`;
@@ -66,13 +66,9 @@ const TimeSelector = () => {
     setTempTime((prev) => ({ ...prev, isPM: !prev.isPM }));
   };
 
-  // When toggling the switch, update the local state and form field accordingly
   const handleToggleShowTime = (checked: boolean) => {
     setShowTime(checked);
-    if (!checked) {
-      // Clear the form's time value if time is turned off
-      setValue("time", undefined);
-    }
+    if (!checked) setValue("time", undefined);
   };
 
   return (

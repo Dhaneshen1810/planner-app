@@ -1,37 +1,19 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
 import { Task } from "@/src/types";
-import UpdateTaskModal from "../modals/update-task-modal";
+import Link from "next/link";
 
 interface UpdateTaskButtonProps {
   task: Task;
-  onSuccess: (task: Task) => void;
 }
 
-const UpdateTaskButton: React.FC<UpdateTaskButtonProps> = ({
-  onSuccess,
-  task,
-}) => {
-  const [open, setOpen] = useState<boolean>(false);
-
-  const handleOpen = () => setOpen(true);
-
-  const handleClose = () => setOpen(false);
-
+const UpdateTaskButton: React.FC<UpdateTaskButtonProps> = ({ task }) => {
   return (
-    <>
-      <Button variant="ghost" className="p-0" onClick={handleOpen}>
+    <Link href={`/tasks/update/${task.id}`}>
+      <Button variant="ghost" className="p-0">
         <Pencil width={18} />
       </Button>
-      <UpdateTaskModal
-        open={open}
-        onClose={handleClose}
-        onSuccess={onSuccess}
-        task={task}
-      />
-    </>
+    </Link>
   );
 };
 
