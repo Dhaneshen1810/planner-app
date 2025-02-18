@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
 import LoaderIcon from "../loader-icon";
-// import WeekdaySelector from "../weekday-selector";
 import TimeSelector from "../time-selector";
 import TaskScheduler from "../task-scheduler";
 import { RECURRING_OPTION } from "@/src/types";
@@ -93,10 +92,6 @@ const AddTaskForm = () => {
               </FormItem>
             )}
           />
-          {/* <WeekdaySelector
-          selectedDays={selectedDays}
-          setSelectedDays={setSelectedDays}
-        /> */}
           <TaskScheduler />
           <TimeSelector />
           <DialogFooter>
