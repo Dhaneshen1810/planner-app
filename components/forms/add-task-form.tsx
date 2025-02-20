@@ -90,7 +90,7 @@ const AddTaskForm = () => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-white text-black"
+                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold"
                     {...field}
                   />
                 </FormControl>
@@ -106,7 +106,7 @@ const AddTaskForm = () => {
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" variant="secondary" disabled={isLoading}>
+            <Button type="submit" variant="default" disabled={isLoading}>
               {isLoading && <LoaderIcon />} Create
             </Button>
           </DialogFooter>

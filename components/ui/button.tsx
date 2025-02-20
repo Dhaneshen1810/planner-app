@@ -5,18 +5,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-darkGray disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-foreground shadow hover:bg-primary/90",
-        destructive: "bg-error text-foreground shadow-sm hover:bg-error/90",
+        default: "bg-paleBlue text-white font-bold shadow hover:bg-paleBlue/90",
+        destructive:
+          "bg-lightPink text-darkGray shadow-sm hover:bg-lightPink/90",
         outline:
-          "border border-muted bg-transparent shadow-sm hover:bg-muted hover:text-foreground",
-        secondary: "bg-secondary text-white shadow-sm hover:bg-foreground/95",
+          "border border-lavender bg-transparent shadow-sm hover:bg-lavender hover:text-darkGray",
+        secondary: "bg-peach text-darkGray shadow-sm hover:bg-darkGray/95",
         tertiary: "bg-white text-black shadow-sm",
-        ghost: "bg-transparent hover:bg-muted hover:text-foreground",
-        link: "text-accent underline-offset-4 hover:underline",
+        ghost: "bg-transparent hover:bg-lavender hover:text-darkGray",
+        link: "text-paleYellow underline-offset-4 hover:underline",
+        purple:
+          "bg-lavender text-white font-bold shadow-sm hover:bg-lavender/90",
       },
       size: {
         default: "h-9 px-4 py-2",

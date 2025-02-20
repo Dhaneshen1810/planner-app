@@ -70,7 +70,7 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-secondary shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl"
+      className="bg-lavender shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl"
     >
       <div className="flex items-center gap-1">
         <div
@@ -182,16 +182,19 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   return (
     <div className="h-screen flex flex-col w-full">
       <div className="flex justify-between max-w-2xl self-center p-4 w-full ">
-        <h1 className="text-2xl font-bold">Tasks</h1>
+        <Link href="/">
+          {" "}
+          <h1 className="text-2xl font-bold text-white">Tasks</h1>
+        </Link>
         <div className="flex gap-2">
           <AddTaskButton />
           {allTasks ? (
             <Link href="/tasks">
-              <Button variant="secondary">Today`s Task</Button>
+              <Button variant="purple">Today`s Task</Button>
             </Link>
           ) : (
             <Link href="/all-tasks">
-              <Button variant="secondary">All Task</Button>
+              <Button variant="purple">All Task</Button>
             </Link>
           )}
         </div>

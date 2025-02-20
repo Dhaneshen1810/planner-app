@@ -81,7 +81,7 @@ const TimeSelector = () => {
           id="show-time-switch"
           className="data-[state=checked]:bg-green-500"
         />
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-1 items-center text-white font-bold">
           <Clock className="h-5 w-5 text-white" />
           <Label htmlFor="show-time-switch">Set Time</Label>
         </div>
@@ -93,11 +93,11 @@ const TimeSelector = () => {
           <div
             className={`w-full max-w-sm space-y-4 rounded-lg p-4 shadow-md transition-all duration-300 ${
               showTime
-                ? "border border-red-200 bg-white opacity-100 translate-y-0 cursor-pointer"
-                : "border border-gray-200 bg-gray-50 opacity-50 translate-y-2 cursor-not-allowed pointer-events-none"
+                ? "border border-red-200 bg-lightPurple opacity-100 translate-y-0 cursor-pointer"
+                : "border border-gray-200 bg-lightPurple opacity-50 translate-y-2 cursor-not-allowed pointer-events-none"
             }`}
           >
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center text-white">
               <Input
                 readOnly
                 value={
@@ -105,9 +105,7 @@ const TimeSelector = () => {
                     ? `${time.hours}:${time.minutes} ${time.isPM ? "PM" : "AM"}`
                     : "Anytime"
                 }
-                className={`text-center text-2xl font-bold ${
-                  showTime ? "text-secondary" : "text-gray-500"
-                }`}
+                className="text-center text-2xl font-bold text-white"
               />
             </div>
           </div>

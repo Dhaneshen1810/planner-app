@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"], // Supports toggling dark mode with a "class"
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,14 +10,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        primary: "var(--primary)",
-        secondary: "var(--secondary)",
-        accent: "var(--accent)",
-        muted: "var(--muted)",
-        error: "var(--error)",
-        success: "var(--success)",
+        palePink: "var(--background)", // Pale Pink
+        darkGray: "var(--foreground)", // Dark Gray for contrast
+        paleBlue: "var(--primary)", // Pale Blue
+        peach: "var(--secondary)", // Peach
+        paleYellow: "var(--accent)", // Pale Yellow
+        lavender: "var(--muted)", // Lavender
+        lightPurple: "var(--muted-light)", // Lavender
+        lightPink: "var(--error)", // Light Pink
+        mintGreen: "var(--success)", // Mint Green
       },
       borderRadius: {
         lg: "var(--radius)",

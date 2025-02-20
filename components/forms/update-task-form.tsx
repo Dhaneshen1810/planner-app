@@ -109,7 +109,7 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-white text-black"
+                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold"
                     {...field}
                   />
                 </FormControl>
@@ -125,7 +125,7 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" variant="secondary" disabled={isLoading}>
+            <Button type="submit" variant="default" disabled={isLoading}>
               {isLoading && <LoaderIcon />} {task ? "Update" : "Create"}
             </Button>
           </DialogFooter>

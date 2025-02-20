@@ -20,8 +20,8 @@ export default async function UpdateTask({
   const task = (await response.json()) as Task;
 
   return (
-    <div className="flex min-h-screen bg-primary items-center flex-col pt-2 gap-5 w-full">
-      <p className="text-2xl font-bold">Update Task</p>
+    <div className="flex min-h-screen bg-lightPink items-center flex-col pt-2 gap-5 w-full">
+      <p className="text-2xl font-bold text-white">Modify Task</p>
       <UpdateTaskForm task={task} />
     </div>
   );

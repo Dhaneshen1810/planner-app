@@ -21,8 +21,12 @@ const RemoveTaskButton: React.FC<RemoveTaskButtonProps> = ({
 
   return (
     <>
-      <Button variant="ghost" className="p-0" onClick={handleOpen}>
-        <Trash2 width={18} />
+      <Button
+        variant="ghost"
+        className="p-2 rounded-full bg-red-200/50"
+        onClick={handleOpen}
+      >
+        <Trash2 width={18} className="text-red-700" />
       </Button>
       <RemoveTaskModal
         open={open}

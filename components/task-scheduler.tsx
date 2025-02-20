@@ -74,7 +74,7 @@ export default function TaskScheduler() {
   };
 
   return (
-    <Card className="w-full min-w-xl">
+    <Card className="w-full min-w-xl bg-lightPurple border-lightPurple text-white">
       <CardHeader>
         <CardTitle>Schedule Task</CardTitle>
       </CardHeader>
@@ -85,11 +85,19 @@ export default function TaskScheduler() {
           className="grid grid-cols-2 gap-4"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="one-time" id="one-time" />
+            <RadioGroupItem
+              value="one-time"
+              id="one-time"
+              className="bg-white"
+            />
             <Label htmlFor="one-time">One-time task</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="recurring" id="recurring" />
+            <RadioGroupItem
+              value="recurring"
+              id="recurring"
+              className="bg-white"
+            />
             <Label htmlFor="recurring">Recurring task</Label>
           </div>
         </RadioGroup>
