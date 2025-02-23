@@ -135,13 +135,16 @@ export default function TaskScheduler() {
             <Label>Select Days</Label>
             <div className="grid grid-cols-7 gap-4">
               {daysOfWeek.map((day) => (
-                <div key={day} className="flex items-center space-x-2">
+                <div
+                  key={day}
+                  className="flex items-center  sm:flex-row flex-col gap-1 sm:gap-2"
+                >
+                  <Label htmlFor={day}>{day.substring(0, 3)}</Label>
                   <Checkbox
                     id={day}
                     checked={selectedDays.includes(day)}
                     onCheckedChange={() => handleDayChange(day)}
                   />
-                  <Label htmlFor={day}>{day.substring(0, 3)}</Label>
                 </div>
               ))}
             </div>

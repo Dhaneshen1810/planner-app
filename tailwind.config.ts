@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "sans-serif"],
+      },
       colors: {
         palePink: "var(--background)", // Pale Pink
         darkGray: "var(--foreground)", // Dark Gray for contrast

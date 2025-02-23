@@ -59,6 +59,7 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
     const body = await req.json();
     const task = body.task as Partial<UpdateTaskInput>;
+    console.log({ body });
 
     if (!task) {
       return NextResponse.json(

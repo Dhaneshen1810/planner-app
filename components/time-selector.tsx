@@ -165,7 +165,7 @@ const TimeSelector = () => {
               <Button
                 onClick={toggleAMPM}
                 variant="outline"
-                className={`w-20 transition-all duration-300 ${
+                className={`w-20 transition-all duration-300 hover:text-white ${
                   tempTime.isPM
                     ? "bg-blue-500 text-white hover:bg-blue-600"
                     : "bg-red-500 text-white hover:bg-red-600"

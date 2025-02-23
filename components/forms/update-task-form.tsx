@@ -75,7 +75,7 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
       let response;
       if (task) {
         // Update existing task
-        response = await axios.put(`/api/tasks/${task.id}`, { data });
+        response = await axios.put(`/api/tasks/${task.id}`, { task: data });
       } else {
         // Create new task
         response = await axios.post("/api/tasks", { data });

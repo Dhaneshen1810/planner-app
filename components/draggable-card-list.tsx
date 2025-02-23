@@ -19,7 +19,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { Clock, GripVertical } from "lucide-react";
 import { Task } from "@/src/types";
 import AddTaskButton from "./buttons/add-task-button";
 import RemoveTaskButton from "./buttons/remove-task-button";
@@ -70,7 +70,7 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl ${
+      className={`shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl border-purple-300 border-4 ${
         isCompleted ? "bg-gray-400" : "bg-lavender"
       }`}
     >
@@ -92,7 +92,13 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
           {card.title}
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
+        {card.time && (
+          <div className="text-white flex gap-1">
+            <Clock width={20} />
+            <div>{card.time}</div>
+          </div>
+        )}
         <UpdateTaskButton task={card} />
         <RemoveTaskButton taskId={card.id} onSuccess={removeTask} />
       </div>
