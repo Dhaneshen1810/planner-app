@@ -90,7 +90,7 @@ const AddTaskForm = () => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold"
+                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
                     {...field}
                   />
                 </FormControl>

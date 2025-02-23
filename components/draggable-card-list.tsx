@@ -70,7 +70,9 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-lavender shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl"
+      className={`shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl ${
+        isCompleted ? "bg-gray-400" : "bg-lavender"
+      }`}
     >
       <div className="flex items-center gap-1">
         <div
