@@ -48,7 +48,7 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-secondary border-secondary">
+      <DialogContent className="bg-lightPurple text-white">
         <DialogHeader>
           <DialogTitle>Remove Task</DialogTitle>
         </DialogHeader>

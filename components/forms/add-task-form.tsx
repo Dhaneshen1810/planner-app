@@ -79,7 +79,7 @@ const AddTaskForm = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-2xl px-2">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
@@ -90,7 +90,7 @@ const AddTaskForm = () => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold"
+                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
                     {...field}
                   />
                 </FormControl>
@@ -100,13 +100,18 @@ const AddTaskForm = () => {
           />
           <TaskScheduler />
           <TimeSelector />
-          <DialogFooter>
+          <DialogFooter className="flex flex-row gap-2 justify-end">
             <Link href="/tasks">
-              <Button variant="tertiary" disabled={isLoading}>
+              <Button variant="tertiary" disabled={isLoading} className="mt-5">
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" variant="default" disabled={isLoading}>
+            <Button
+              type="submit"
+              variant="default"
+              disabled={isLoading}
+              className="mt-5"
+            >
               {isLoading && <LoaderIcon />} Create
             </Button>
           </DialogFooter>

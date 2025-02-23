@@ -12,11 +12,11 @@ const AddTaskButton = () => {
       {isMobile ? (
         <Link href="/tasks/create">
           <Button
-            className="fixed bottom-5 right-5 rounded-full p-3 shadow-lg"
+            className="fixed bottom-5 right-5 rounded-full p-3 shadow-lg w-12 h-12"
             size="icon"
             variant="default"
           >
-            <Plus className="h-9 w-9" />
+            <Plus className="h-12 w-12" />
           </Button>
         </Link>
       ) : (
