@@ -98,7 +98,7 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
   };
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-2xl px-2">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
@@ -119,13 +119,18 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
           />
           <TaskScheduler />
           <TimeSelector />
-          <DialogFooter>
+          <DialogFooter className="flex flex-row gap-2 justify-end">
             <Link href="/tasks">
               <Button variant="tertiary" disabled={isLoading}>
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" variant="default" disabled={isLoading}>
+            <Button
+              type="submit"
+              variant="default"
+              disabled={isLoading}
+              className="mr-1"
+            >
               {isLoading && <LoaderIcon />} {task ? "Update" : "Create"}
             </Button>
           </DialogFooter>
