@@ -19,7 +19,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Clock, GripVertical } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import { Task } from "@/src/types";
 import AddTaskButton from "./buttons/add-task-button";
 import RemoveTaskButton from "./buttons/remove-task-button";
@@ -83,22 +83,23 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
         >
           <GripVertical color="gray" width={15} />
         </div>
-        <div
-          className={`text-sm sm:text-lg font-semibold cursor-pointer ${
-            isCompleted ? "line-through text-gray-200" : "text-white"
-          }`}
-          onClick={() => handleTitleClick(isCompleted)}
-        >
-          {card.title}
+        <div className="flex flex-col gap-1">
+          <div
+            className={`text-sm sm:text-lg font-semibold cursor-pointer ${
+              isCompleted ? "line-through text-gray-200" : "text-white"
+            }`}
+            onClick={() => handleTitleClick(isCompleted)}
+          >
+            {card.title}
+          </div>
+          {card.time && (
+            <div className="text-white flex gap-1">
+              <div>{card.time}</div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        {card.time && (
-          <div className="text-white flex gap-1">
-            <Clock width={20} />
-            <div>{card.time}</div>
-          </div>
-        )}
         <UpdateTaskButton task={card} />
         <RemoveTaskButton taskId={card.id} onSuccess={removeTask} />
       </div>
@@ -172,7 +173,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       pendingUpdateRef.current = updatedCards;
 
       debounceTimerRef.current = setTimeout(() => {
-        console.log("Updated Cards Order:", updatedCards);
         updateTasksInDb(updatedCards);
       }, 1000);
 
