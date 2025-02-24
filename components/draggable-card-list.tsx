@@ -19,7 +19,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Clock, GripVertical } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import { Task } from "@/src/types";
 import AddTaskButton from "./buttons/add-task-button";
 import RemoveTaskButton from "./buttons/remove-task-button";
