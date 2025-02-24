@@ -2,7 +2,7 @@
   "name": "Colex Planner",
   "short_name": "Planner",
   "description": "A Colex Planner",
-  "start_url": "/",
+  "start_url": "/tasks",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff4081",
