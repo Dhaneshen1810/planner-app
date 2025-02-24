@@ -4,8 +4,8 @@
   "description": "A Colex Planner",
   "start_url": "/tasks",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ff4081",
+  "background_color": "#ffb6c1",
+  "theme_color": "#ffb6c1",
   "icons": [
     {
       "src": "/icon-192x192.png",
