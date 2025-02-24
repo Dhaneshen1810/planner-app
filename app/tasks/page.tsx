@@ -11,8 +11,6 @@ const fetchTasks = async (): Promise<Task[]> => {
     .toString()
     .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
 
-  console.log({ localDate });
-
   try {
     const response = await axios.get<Task[]>(
       `${SERVER_URL}/tasks?date=${localDate}`

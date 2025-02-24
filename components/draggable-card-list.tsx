@@ -173,7 +173,6 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
       pendingUpdateRef.current = updatedCards;
 
       debounceTimerRef.current = setTimeout(() => {
-        console.log("Updated Cards Order:", updatedCards);
         updateTasksInDb(updatedCards);
       }, 1000);
 

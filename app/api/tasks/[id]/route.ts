@@ -87,8 +87,6 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       position: task.position || 0,
     };
 
-    console.log({ updatedTask });
-
     const response = await axios.put(
       `${process.env.SERVER_URL}/tasks/${taskId}`,
       updatedTask,
