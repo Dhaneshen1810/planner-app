@@ -55,7 +55,7 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
         <p className="text-center sm:text-left text-lg">
           Are you sure you want to remove this task?
         </p>
-        <DialogFooter>
+        <DialogFooter className="gap-2">
           <Button
             variant="destructive"
             onClick={handleRemove}

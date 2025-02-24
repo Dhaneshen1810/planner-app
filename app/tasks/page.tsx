@@ -2,14 +2,17 @@ import TaskManager from "@/components/TaskManager";
 import { Task } from "@/src/types";
 import axios from "axios";
 export const dynamic = "force-dynamic";
+import { toZonedTime, format } from "date-fns-tz";
 
 const fetchTasks = async (): Promise<Task[]> => {
   const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
 
-  const today = new Date();
-  const localDate = `${today.getFullYear()}-${(today.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+  const edmontonTimeZone = "America/Edmonton";
+  const now = new Date();
+  const edmontonDate = toZonedTime(now, edmontonTimeZone);
+  const localDate = format(edmontonDate, "yyyy-MM-dd", {
+    timeZone: edmontonTimeZone,
+  });
 
   try {
     const response = await axios.get<Task[]>(
