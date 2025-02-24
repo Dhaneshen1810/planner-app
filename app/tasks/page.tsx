@@ -13,7 +13,10 @@ const fetchTasks = async (): Promise<Task[]> => {
 
   try {
     const response = await axios.get<Task[]>(
-      `${SERVER_URL}/tasks?date=${localDate}`
+      `${SERVER_URL}/tasks?date=${localDate}`,
+      {
+        timeout: 30000, // 30 seconds timeout
+      }
     );
     return response.data;
   } catch (error) {
