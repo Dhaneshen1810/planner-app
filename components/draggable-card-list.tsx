@@ -120,6 +120,27 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingUpdateRef = useRef<Task[] | null>(null);
 
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get("/api/tasks");
+      if (response.data.success) {
+        setCards(response.data.tasks);
+      }
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 15 * 60 * 1000);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
   useEffect(() => {
     setCards([...initialCards]);
   }, [initialCards]);
