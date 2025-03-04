@@ -28,6 +28,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { getLocalDate } from "@/lib/utils";
 
 interface SortableCardProps {
   card: Task;
@@ -122,7 +123,8 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("/api/tasks");
+      const localDate = getLocalDate();
+      const response = await axios.get(`/tasks?date=${localDate}`);
       if (response.data.success) {
         setCards(response.data.tasks);
       }
