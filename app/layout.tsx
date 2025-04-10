@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="font-sans bg-lightPink">
+      <body className="flex h-screen bg-gradient-to-b from-lightPink via-lightPink to-lavender justify-center">
         {children}
         <Toaster />
       </body>

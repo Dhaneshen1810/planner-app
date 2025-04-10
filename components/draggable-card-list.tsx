@@ -28,7 +28,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { getLocalDate } from "@/lib/utils";
+import { getLocalDate, getTodayDate } from "@/lib/utils";
 
 interface SortableCardProps {
   card: Task;
@@ -71,7 +71,7 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`shadow-md rounded-lg p-4 mb-3 flex justify-between items-center w-full max-w-xl border-purple-300 border-4 ${
+      className={`shadow-md rounded-lg bg-opacity-50 py-1 px-2 mb-3 flex justify-between items-center w-full max-w-xl ${
         isCompleted ? "bg-gray-400" : "bg-lavender"
       }`}
     >
@@ -86,7 +86,7 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
         </div>
         <div className="flex flex-col gap-1">
           <div
-            className={`text-sm sm:text-lg font-semibold cursor-pointer ${
+            className={`text-md sm:text-lg font-semibold cursor-pointer ${
               isCompleted ? "line-through text-gray-200" : "text-white"
             }`}
             onClick={() => handleTitleClick(isCompleted)}
@@ -230,8 +230,19 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
           )}
         </div>
       </div>
-
-      <div className="flex-1 overflow-y-auto p-4 items-center flex flex-col">
+      <div className="text-center">
+        <p className="font-bold text-md sm:text-lg text-white">
+          {getTodayDate()}
+        </p>
+      </div>
+      {cards && (
+        <div className="pl-5 mt-2">
+          <p className="font-bold text-sm sm:text-md text-white">
+            {cards.length} tasks for today
+          </p>
+        </div>
+      )}
+      <div className="flex-1 overflow-y-auto px-4 py-1 items-center flex flex-col">
         {cards.length > 0 ? (
           <DndContext
             sensors={sensors}

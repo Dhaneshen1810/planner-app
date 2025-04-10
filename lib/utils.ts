@@ -19,3 +19,7 @@ export const getLocalDate = () => {
 
   return localDate;
 };
+
+export const getTodayDate = () => {
+  return format(new Date(), "EEEE, MMMM do");
+};
