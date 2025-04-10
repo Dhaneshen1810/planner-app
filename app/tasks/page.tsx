@@ -24,11 +24,7 @@ const TasksPage = async () => {
   const tasks = await fetchTasks();
   const sortedTasks = tasks.sort((a, b) => a.position - b.position);
 
-  return (
-    <div className="flex h-screen bg-lightPink justify-center">
-      <TaskManager tasks={sortedTasks} />
-    </div>
-  );
+  return <TaskManager tasks={sortedTasks} />;
 };
 
 export default TasksPage;
