@@ -1,6 +1,6 @@
 import React from "react";
 import UpdateTaskForm from "@/components/forms/update-task-form";
-import { Task } from "@/src/types";
+import { Task } from "@/src/stores/tasksStore";
 
 export default async function UpdateTask({
   params,
@@ -22,7 +22,7 @@ export default async function UpdateTask({
   return (
     <div className="flex min-h-screen bg-lightPink items-center flex-col pt-2 gap-5 w-full">
       <p className="text-2xl font-bold text-white">Modify Task</p>
-      <UpdateTaskForm task={task} />
+      <UpdateTaskForm task={task} onSuccess={() => console.log("On success")} />
     </div>
   );
 }
