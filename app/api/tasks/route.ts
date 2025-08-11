@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     let fetchUrl = `${process.env.SERVER_URL}/tasks`;
 
     if (date) {
-      fetchUrl += `?date_str=${encodeURIComponent(date)}`;
+      fetchUrl += `?date=${date}`;
     }
 
     const response = await fetch(fetchUrl);

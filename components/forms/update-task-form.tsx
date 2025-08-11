@@ -14,14 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DialogFooter } from "../ui/dialog";
-import LoaderIcon from "../loader-icon";
-import { RECURRING_OPTION, Task } from "@/src/types";
-import axios from "axios";
-import { isSuccessfullResponse } from "@/lib/utils";
+import { RECURRING_OPTION } from "@/src/types";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { Task } from "@/src/stores/tasksStore";
+import RemoveTaskModal from "../modals/remove-task-modal";
+import { Trash2 } from "lucide-react";
+import useTasks from "@/hooks/use-tasks";
 
 const TaskScheduler = dynamic(() => import("../task-scheduler"), {
   ssr: false,
@@ -41,10 +40,16 @@ const taskSchema = z.object({
 
 export type UpdateTaskFormValues = z.infer<typeof taskSchema>;
 
-const UpdateTaskForm = ({ task }: { task?: Task }) => {
-  const router = useRouter();
+interface UpdateTaskFormProps {
+  onSuccess: () => void;
+  task: Task;
+}
+
+const UpdateTaskForm: React.FC<UpdateTaskFormProps> = ({ task, onSuccess }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const { updateEntry } = useTasks();
 
   const form = useForm<UpdateTaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -72,18 +77,8 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
     setIsLoading(true);
 
     try {
-      let response;
-      if (task) {
-        // Update existing task
-        response = await axios.put(`/api/tasks/${task.id}`, { task: data });
-      } else {
-        // Create new task
-        response = await axios.post("/api/tasks", { data });
-      }
-
-      if (isSuccessfullResponse(response.status)) {
-        router.push("/tasks");
-      }
+      await updateEntry(task.id, data);
+      onSuccess();
     } catch (error) {
       toast({
         variant: "destructive",
@@ -109,7 +104,7 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
+                    className="text-black border-gray-400 font-bold placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
                     {...field}
                   />
                 </FormControl>
@@ -119,23 +114,31 @@ const UpdateTaskForm = ({ task }: { task?: Task }) => {
           />
           <TaskScheduler />
           <TimeSelector />
-          <DialogFooter className="flex flex-row gap-2 justify-end">
-            <Link href="/tasks">
-              <Button variant="tertiary" disabled={isLoading}>
-                Cancel
-              </Button>
-            </Link>
+          <DialogFooter className="flex flex-col gap-2">
             <Button
               type="submit"
               variant="default"
               disabled={isLoading}
-              className="mr-1"
+              className="w-full bg-black text-white"
             >
-              {isLoading && <LoaderIcon />} {task ? "Update" : "Create"}
+              Update
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => setDeleteModalOpen(true)}
+              disabled={isLoading}
+            >
+              Remove <Trash2 width={18} />
             </Button>
           </DialogFooter>
         </form>
       </Form>
+      <RemoveTaskModal
+        open={deleteModalOpen}
+        handleClose={() => setDeleteModalOpen(false)}
+        taskId={task.id}
+      />
     </div>
   );
 };

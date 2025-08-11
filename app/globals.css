@@ -13,6 +13,7 @@
   --error: #ffb6c1;
   --success: #98fb98;
   --radius: 0.5rem;
+  --font-inter: 'Inter', sans-serif;
 }
 
 body {

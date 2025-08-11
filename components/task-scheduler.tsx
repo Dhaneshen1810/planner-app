@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -74,11 +74,8 @@ export default function TaskScheduler() {
   };
 
   return (
-    <Card className="w-full min-w-xl bg-lightPurple border-lightPurple text-white">
-      <CardHeader>
-        <CardTitle>Schedule Task</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-6">
+    <Card className="w-full min-w-xl bg-white text-white">
+      <CardContent className="flex flex-col gap-4 py-3 text-black">
         <RadioGroup
           value={taskType}
           onValueChange={handleTaskTypeChange}
@@ -90,7 +87,7 @@ export default function TaskScheduler() {
               id="one-time"
               className="bg-white"
             />
-            <Label htmlFor="one-time">One-time task</Label>
+            <Label htmlFor="one-time">Task</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem
@@ -98,7 +95,7 @@ export default function TaskScheduler() {
               id="recurring"
               className="bg-white"
             />
-            <Label htmlFor="recurring">Recurring task</Label>
+            <Label htmlFor="recurring">Habit</Label>
           </div>
         </RadioGroup>
 

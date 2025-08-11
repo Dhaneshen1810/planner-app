@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import MainBox from "@/components/boxes/main-box";
 
 export default function Home() {
-  redirect("/tasks");
+  return <MainBox />;
 }
