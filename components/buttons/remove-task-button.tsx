@@ -6,13 +6,9 @@ import { Trash2 } from "lucide-react";
 
 interface RemoveTaskButtonProps {
   taskId: string;
-  onSuccess: (taskId: string) => void;
 }
 
-const RemoveTaskButton: React.FC<RemoveTaskButtonProps> = ({
-  onSuccess,
-  taskId,
-}) => {
+const RemoveTaskButton: React.FC<RemoveTaskButtonProps> = ({ taskId }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
@@ -28,12 +24,7 @@ const RemoveTaskButton: React.FC<RemoveTaskButtonProps> = ({
       >
         <Trash2 width={18} className="text-red-700" />
       </Button>
-      <RemoveTaskModal
-        open={open}
-        onClose={handleClose}
-        taskId={taskId}
-        onSuccess={onSuccess}
-      />
+      <RemoveTaskModal open={open} handleClose={handleClose} taskId={taskId} />
     </>
   );
 };

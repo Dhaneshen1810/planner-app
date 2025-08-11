@@ -32,10 +32,10 @@ import { getLocalDate, getTodayDate } from "@/lib/utils";
 
 interface SortableCardProps {
   card: Task;
-  removeTask: (taskId: string) => void;
+  // removeTask: (taskId: string) => void;
 }
 
-const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
+const SortableCard: React.FC<SortableCardProps> = ({ card }) => {
   const { toast } = useToast();
   const [isCompleted, setIsCompleted] = useState<boolean>(card.is_completed);
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -102,7 +102,7 @@ const SortableCard: React.FC<SortableCardProps> = ({ card, removeTask }) => {
       </div>
       <div className="flex gap-2 items-center">
         <UpdateTaskButton task={card} />
-        <RemoveTaskButton taskId={card.id} onSuccess={removeTask} />
+        <RemoveTaskButton taskId={card.id} />
       </div>
     </div>
   );
@@ -203,10 +203,10 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
     });
   };
 
-  const removeTask = (taskId: string) =>
-    setCards((prevCards) =>
-      (prevCards ?? []).filter((task) => task.id !== taskId)
-    );
+  // const removeTask = (taskId: string) =>
+  //   setCards((prevCards) =>
+  //     (prevCards ?? []).filter((task) => task.id !== taskId)
+  //   );
 
   if (!cards) return <p className="text-center">Loading...</p>;
 
@@ -257,7 +257,7 @@ const DraggableCardList: React.FC<DraggableCardListProps> = ({
                 <SortableCard
                   key={card.id}
                   card={card}
-                  removeTask={removeTask}
+                  // removeTask={removeTask}
                 />
               ))}
             </SortableContext>

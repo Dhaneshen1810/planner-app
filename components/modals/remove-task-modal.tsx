@@ -7,33 +7,31 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2 } from "lucide-react";
 import LoaderIcon from "../loader-icon";
+import useTasks from "@/hooks/use-tasks";
 
 interface RemoveTaskModalProps {
   open: boolean;
-  onClose: () => void;
+  handleClose: () => void;
   taskId: string;
-  onSuccess: (taskId: string) => void;
 }
 
 const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
   open,
-  onClose,
+  handleClose,
   taskId,
-  onSuccess,
 }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { deleteEntry } = useTasks();
 
   const handleRemove = async () => {
     setIsLoading(true);
     try {
-      await axios.delete(`/api/tasks/${taskId}`);
-      onSuccess(taskId);
-      onClose();
+      await deleteEntry(taskId);
+      handleClose();
     } catch (error) {
       console.error("Error removing task:", error);
       toast({
@@ -47,8 +45,8 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-lightPurple text-white">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="bg-white text-black max-w-[300px] rounded-xl">
         <DialogHeader>
           <DialogTitle>Remove Task</DialogTitle>
         </DialogHeader>
@@ -57,13 +55,14 @@ const RemoveTaskModal: React.FC<RemoveTaskModalProps> = ({
         </p>
         <DialogFooter className="gap-2">
           <Button
+            type="button"
             variant="destructive"
             onClick={handleRemove}
             disabled={isLoading}
           >
             Remove {isLoading ? <LoaderIcon /> : <Trash2 width={18} />}
           </Button>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
         </DialogFooter>

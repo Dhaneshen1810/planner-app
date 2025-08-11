@@ -16,12 +16,9 @@ import {
 import { DialogFooter } from "../ui/dialog";
 import LoaderIcon from "../loader-icon";
 import { RECURRING_OPTION } from "@/src/types";
-import axios from "axios";
-import { isSuccessfullResponse } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import useTasks from "@/hooks/use-tasks";
 
 const TaskScheduler = dynamic(() => import("../task-scheduler"), {
   ssr: false,
@@ -41,10 +38,14 @@ const taskSchema = z.object({
 
 export type TaskFormValues = z.infer<typeof taskSchema>;
 
-const AddTaskForm = () => {
-  const router = useRouter();
+interface AddTaskFormProps {
+  onSuccess: () => void;
+}
+
+const AddTaskForm: React.FC<AddTaskFormProps> = ({ onSuccess }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { createEntry } = useTasks();
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -58,22 +59,20 @@ const AddTaskForm = () => {
 
   const handleSubmit = async (data: TaskFormValues) => {
     setIsLoading(true);
-
     try {
-      const response = await axios.post("/api/tasks", { data });
-      console.log("status", response.status);
-      if (isSuccessfullResponse(response.status)) {
-        router.push("/tasks");
-      }
+      await createEntry(data);
+
+      form.reset();
+
+      onSuccess();
     } catch (error) {
+      console.error("Error adding task:", error);
       toast({
         variant: "destructive",
         title: "Failed to add task",
         description: "An unexpected error occurred",
       });
-      console.error("Error adding task:", error);
     } finally {
-      form.reset();
       setIsLoading(false);
     }
   };
@@ -90,7 +89,7 @@ const AddTaskForm = () => {
                 <FormControl>
                   <Input
                     placeholder="Title"
-                    className="bg-lightPurple text-white border-lightPurple font-bold placeholder:text-white placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
+                    className="bg-white text-black border-black font-bold placeholder:font-bold py-7 text-xl placeholder:text-xl leading-none md:text-xl"
                     {...field}
                   />
                 </FormControl>
@@ -101,16 +100,16 @@ const AddTaskForm = () => {
           <TaskScheduler />
           <TimeSelector />
           <DialogFooter className="flex flex-row gap-2 justify-end">
-            <Link href="/tasks">
+            {/* <Link href="/tasks">
               <Button variant="tertiary" disabled={isLoading} className="mt-5">
                 Cancel
               </Button>
-            </Link>
+            </Link> */}
             <Button
               type="submit"
               variant="default"
               disabled={isLoading}
-              className="mt-5"
+              className="mt-5 w-full bg-black"
             >
               {isLoading && <LoaderIcon />} Create
             </Button>

@@ -72,32 +72,32 @@ const TimeSelector = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col">
       {/* Switch to toggle showing/hiding the time */}
-      <div className="flex items-center space-x-2">
+      <div className="flex gap-2 justify-end">
+        <div className="flex gap-1 items-center font-bold">
+          <Clock className="h-5 w-5" />
+          <Label htmlFor="show-time-switch">Set Time</Label>
+        </div>
         <Switch
           checked={showTime}
           onCheckedChange={handleToggleShowTime}
           id="show-time-switch"
-          className="data-[state=checked]:bg-green-500"
+          className="data-[state=checked]:bg-black"
         />
-        <div className="flex gap-1 items-center text-white font-bold">
-          <Clock className="h-5 w-5 text-white" />
-          <Label htmlFor="show-time-switch">Set Time</Label>
-        </div>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           {/* This container is always rendered. Its classes change based on showTime */}
           <div
-            className={`w-full max-w-sm space-y-4 rounded-lg p-4 shadow-md transition-all duration-300 ${
+            className={`w-full max-w-sm space-y-4 rounded-lg p-4 shadow-md transition-all duration-300 text-black mt-3 ${
               showTime
-                ? "border border-red-200 bg-lightPurple opacity-100 translate-y-0 cursor-pointer"
-                : "border border-gray-200 bg-lightPurple opacity-50 translate-y-2 cursor-not-allowed pointer-events-none"
+                ? "border border-gray-200 opacity-100 translate-y-0 cursor-pointer"
+                : "border border-gray-200 opacity-50 translate-y-2 cursor-not-allowed pointer-events-none"
             }`}
           >
-            <div className="flex items-center justify-center text-white">
+            <div className="flex items-center justify-center">
               <Input
                 readOnly
                 value={
@@ -105,7 +105,7 @@ const TimeSelector = () => {
                     ? `${time.hours}:${time.minutes} ${time.isPM ? "PM" : "AM"}`
                     : "Anytime"
                 }
-                className="text-center text-2xl font-bold text-white"
+                className="text-center text-2xl font-bold text-black"
               />
             </div>
           </div>
@@ -115,21 +115,21 @@ const TimeSelector = () => {
         {showTime && (
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle className="text-center text-red-500">
+              <DialogTitle className="text-center text-black">
                 Select Time
               </DialogTitle>
             </DialogHeader>
             <div className="flex justify-center space-x-4 p-4">
               <div className="w-20 text-center">
-                <Label className="text-red-500">Hours</Label>
-                <ScrollArea className="h-[200px] w-full rounded-md border border-red-200">
+                <Label className="text-black">Hours</Label>
+                <ScrollArea className="h-[200px] w-full rounded-md border border-gray-200">
                   {hours.map((hour) => (
                     <div
                       key={hour}
                       className={`cursor-pointer p-2 transition-all duration-300 ${
                         tempTime.hours === hour
-                          ? "bg-red-100 text-red-500"
-                          : "hover:bg-red-50 text-gray-400"
+                          ? "bg-gray-100 text-black"
+                          : "hover:bg-gray-50 text-gray-400"
                       }`}
                       onClick={() =>
                         setTempTime((prev) => ({ ...prev, hours: hour }))
@@ -141,15 +141,15 @@ const TimeSelector = () => {
                 </ScrollArea>
               </div>
               <div className="w-20 text-center">
-                <Label className="text-blue-500">Minutes</Label>
-                <ScrollArea className="h-[200px] w-full rounded-md border border-blue-200">
+                <Label className="text-gray-500">Minutes</Label>
+                <ScrollArea className="h-[200px] w-full rounded-md border border-gray-200">
                   {minutes.map((minute) => (
                     <div
                       key={minute}
                       className={`cursor-pointer p-2 transition-all duration-300 ${
                         tempTime.minutes === minute
-                          ? "bg-blue-100 text-blue-500"
-                          : "hover:bg-blue-50 text-gray-400"
+                          ? "bg-gray-100 text-gray-500"
+                          : "hover:bg-gray-50 text-gray-400"
                       }`}
                       onClick={() =>
                         setTempTime((prev) => ({ ...prev, minutes: minute }))
@@ -167,15 +167,15 @@ const TimeSelector = () => {
                 variant="outline"
                 className={`w-20 transition-all duration-300 hover:text-white ${
                   tempTime.isPM
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
-                    : "bg-red-500 text-white hover:bg-red-600"
+                    ? "bg-gray-500 text-white hover:bg-gray-600"
+                    : "bg-gray-500 text-white hover:bg-gray-600"
                 }`}
               >
                 {tempTime.isPM ? "PM" : "AM"}
               </Button>
               <Button
                 onClick={handleConfirm}
-                className="bg-red-500 text-white hover:bg-red-600 transition-all duration-300"
+                className="bg-white text-black hover:bg-gray-600 transition-all duration-300"
               >
                 Confirm
               </Button>
