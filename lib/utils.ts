@@ -63,10 +63,18 @@ export const getCurrentWeekDays = (): WeekDay[] => {
 export const isActiveTask = (date: string, task: Task): boolean => {
   const day = formatInTimeZone(date, EDMONTON_TZ, "EEEE");
 
-  console.log(task.date, date, task.recurring_option, day);
-
   return (
     task.date === date ||
+    task.recurring_option.includes(day as RECURRING_OPTION)
+  );
+};
+
+export const isTodayTask = (task: Task): boolean => {
+  const localDate = getLocalDate();
+  const day = formatInTimeZone(localDate, EDMONTON_TZ, "EEEE");
+
+  return (
+    task.date === localDate ||
     task.recurring_option.includes(day as RECURRING_OPTION)
   );
 };

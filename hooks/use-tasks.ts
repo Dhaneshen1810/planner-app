@@ -1,13 +1,18 @@
 import { TaskFormValues } from "@/components/forms/add-task-form";
 import { UpdateTaskFormValues } from "@/components/forms/update-task-form";
-import { isActiveTask } from "@/lib/utils";
+import { getLocalDate, isActiveTask, isTodayTask } from "@/lib/utils";
 import { Task, useTaskStore } from "@/src/stores/tasksStore";
 import axios from "axios";
 
 const useTasks = () => {
-  const { tasks, setTasks, activeDate, setActiveDate } = useTaskStore(
-    (state) => state
-  );
+  const {
+    tasks,
+    setTasks,
+    activeDate,
+    setActiveDate,
+    todayTasks,
+    setTodayTasks,
+  } = useTaskStore((state) => state);
 
   const getTasks = async (dateStr: string): Promise<Task[]> => {
     try {
@@ -36,6 +41,10 @@ const useTasks = () => {
           setTasks([...(tasks || []), newTask]);
         }
 
+        if (isTodayTask(newTask)) {
+          setTodayTasks([...(todayTasks || []), newTask]);
+        }
+
         return newTask;
       } else {
         throw new Error(response.data?.message || "Failed to create task");
@@ -57,6 +66,13 @@ const useTasks = () => {
 
         setTasks(updatedTasks);
 
+        if (isTodayTask(updatedTask)) {
+          const updatedTodayTasks = todayTasks.map((t) =>
+            t.id === id ? updatedTask : t
+          );
+          setTodayTasks(updatedTodayTasks);
+        }
+
         return updatedTask;
       } else {
         throw new Error(response.data?.message || "Failed to create task");
@@ -74,20 +90,37 @@ const useTasks = () => {
       const updatedTasks = tasks.filter((task) => task.id !== id);
 
       setTasks(updatedTasks);
+
+      if (activeDate === getLocalDate()) {
+        setTodayTasks(updatedTasks);
+      }
     } catch (error) {
       console.error("Failed to delete result:", error);
       throw error;
     }
   };
 
+  const updateTask = (taskId: string, task: Task) => {
+    const updatedTasks = tasks.map((t) => (t.id === taskId ? task : t));
+
+    setTasks(updatedTasks);
+
+    if (activeDate === getLocalDate()) {
+      setTodayTasks(updatedTasks);
+    }
+  };
+
   return {
     tasks,
+    updateTask,
     getTasks,
     createEntry,
     updateEntry,
     deleteEntry,
     activeDate,
     setActiveDate,
+    todayTasks,
+    setTodayTasks,
   };
 };
 

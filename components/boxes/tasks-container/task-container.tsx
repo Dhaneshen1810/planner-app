@@ -3,9 +3,11 @@ import useTasks from "@/hooks/use-tasks";
 import DaySelectionContainer from "./day-selection/day-selection-container";
 import TaskCard from "./task-card";
 import Footer from "../footer-box/footer";
+import { getLocalDate } from "@/lib/utils";
 
 const TaskContainer = () => {
-  const { tasks } = useTasks();
+  const { tasks, activeDate } = useTasks();
+  const isToday = activeDate === getLocalDate();
 
   return (
     <div className="flex flex-col bg-white border-t border-gray-200 rounded-t-2xl p-4 w-full">
@@ -14,7 +16,7 @@ const TaskContainer = () => {
         {tasks.length > 0 ? (
           <div className="flex flex-col w-full">
             {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task.id} task={task} isToday={isToday} />
             ))}
           </div>
         ) : (

@@ -1,11 +1,10 @@
 "use client";
-// import useTasks from "@/hooks/use-tasks";
+import useTasks from "@/hooks/use-tasks";
 import { getTimeOfDay } from "@/lib/utils";
-import { Task } from "@/src/stores/tasksStore";
 import { CircleCheck, CalendarSync } from "lucide-react";
 
 const GreetingsBox = () => {
-  const todayTasks: Task[] = [];
+  const { todayTasks } = useTasks();
 
   const tasksLeft = todayTasks.filter(
     (task) => task.recurring_option.length <= 0 && !task.is_completed
