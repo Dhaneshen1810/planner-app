@@ -19,6 +19,8 @@ interface TaskState {
   isSubscribed: boolean;
   setTasks: (task: Task[]) => void;
   todayDate: string;
+  todayTasks: Task[];
+  setTodayTasks: (task: Task[]) => void;
 }
 
 export const useTaskStore = create<TaskState>()((set) => ({
@@ -28,6 +30,8 @@ export const useTaskStore = create<TaskState>()((set) => ({
   activeDate: getLocalDate(),
   setActiveDate: (activeDate) => set({ activeDate }),
   todayDate: getLocalDate(),
+  todayTasks: [],
+  setTodayTasks: (todayTasks) => set({ todayTasks }),
 }));
 
 export const useTask = () => useTaskStore((state) => state.tasks);

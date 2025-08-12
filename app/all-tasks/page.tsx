@@ -7,7 +7,6 @@ const fetchTasks = async (): Promise<Task[]> => {
   const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
   try {
     const response = await axios.get<Task[]>(`${SERVER_URL}/tasks`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
