@@ -10,7 +10,7 @@ const Footer = () => {
       <AddTaskModal />
       <button>
         <CalendarRange
-          className="h-6 w-6 hidden"
+          className="h-6 w-6"
           stroke="gray"
           strokeWidth={2.5}
         />
