@@ -131,6 +131,7 @@ const useTasks = () => {
     tasks,
     updateTask,
     getTasks,
+    getAllTasks,
     createEntry,
     updateEntry,
     deleteEntry,
