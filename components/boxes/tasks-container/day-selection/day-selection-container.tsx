@@ -1,21 +1,21 @@
 import { getCurrentWeekDays, getLocalDate, WeekDay } from "@/lib/utils";
 import DayCard from "./day-card";
 import useTasks from "@/hooks/use-tasks";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const DaySelectionContainer = () => {
   const { getTasks, activeDate, setActiveDate, setTodayTasks } = useTasks();
   const currentWeekDays = getCurrentWeekDays();
 
-  const getInitialTasks = async () => {
+  const getInitialTasks = useCallback(async () => {
     const todayDate = getLocalDate();
     const tasks = await getTasks(todayDate);
     setTodayTasks(tasks);
-  };
+  }, [getTasks, setTodayTasks]);
 
   useEffect(() => {
     getInitialTasks();
-  }, []);
+  }, [getInitialTasks]);
 
   const handleSelect = async (weekday: WeekDay) => {
     setActiveDate(weekday.date);

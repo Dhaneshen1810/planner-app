@@ -9,7 +9,6 @@ import TaskCard from "@/components/boxes/tasks-container/task-card";
 const CalendarPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
   const {tasks, getAllTasks, activeDate} = useTasks();
   const [localTasks, setLocalTasks] = useState(tasks ?? []);
   const isToday = activeDate === getLocalDate();
@@ -82,7 +81,7 @@ const CalendarPage = () => {
           <ul className="space-y-3">
             {localTasks.map((task) => (
               <li key={task.id}>
-                <TaskCard key={task.id} task={task} isToday={isToday} />
+                <TaskCard task={task} isToday={isToday} />
               </li>
             ))}
           </ul>
