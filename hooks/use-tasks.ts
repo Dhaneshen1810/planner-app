@@ -30,6 +30,23 @@ const useTasks = () => {
     }
   };
 
+  const getAllTasks = async (): Promise<Task[]> => {
+    try {
+      const response = await axios.get(`/api/tasks`); 
+      // use function to call tasks when designing task page
+
+      const tasks: Task[] = response.data.tasks;
+
+      setTasks(tasks);
+      return tasks;
+    } catch (error) {
+      console.error("[useResults] Failed to fetch results:", error);
+      setTasks([]);
+
+      return [];
+    }
+  };
+
   const createEntry = async (data: TaskFormValues) => {
     try {
       const response = await axios.post("/api/tasks", { data });
@@ -114,6 +131,7 @@ const useTasks = () => {
     tasks,
     updateTask,
     getTasks,
+    getAllTasks,
     createEntry,
     updateEntry,
     deleteEntry,
